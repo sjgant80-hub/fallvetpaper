@@ -73,22 +73,19 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     'llama-3b':  { id: 'Llama-3.2-3B-Instruct-q4f16_1-MLC',   size: '~2GB',   label: '3B · balanced · default · most laptops' },
     'qwen-7b':   { id: 'Qwen2.5-7B-Instruct-q4f16_1-MLC',     size: '~5GB',   label: '7B · capable · needs decent GPU (M-series Mac / 8GB+ VRAM)' },
     'llama-8b':  { id: 'Llama-3.1-8B-Instruct-q4f16_1-MLC',   size: '~5GB',   label: '8B · common · needs decent GPU' },
-    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' },
-  };
+    'llama-70b': { id: 'Llama-3.1-70B-Instruct-q4f16_1-MLC',  size: '~40GB',  label: '70B · frontier · needs serious GPU + 64GB+ RAM' }};
   const DEFAULT_MODEL = 'llama-3b';
 
   const T3_PROVIDERS = {
     anthropic: { label: 'Anthropic Claude', models: ['claude-sonnet-4-5','claude-opus-4-7','claude-haiku-4-5'], default: 'claude-sonnet-4-5', url: 'https://api.anthropic.com/v1/messages' },
     openai:    { label: 'OpenAI',           models: ['gpt-4o','gpt-4o-mini','o1-mini'],                          default: 'gpt-4o-mini',      url: 'https://api.openai.com/v1/chat/completions' },
-    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' },
-  };
+    google:    { label: 'Google Gemini',    models: ['gemini-1.5-pro','gemini-1.5-flash','gemini-2.0-flash-exp'], default: 'gemini-1.5-flash', url: 'https://generativelanguage.googleapis.com/v1beta/models/' }};
 
   // ─── State ───────────────────────────────────────────────────────
   const STATE = {
     config: loadConfig(),
     ai: { ready: false, loading: false, progress: 0, engine: null, model: null },
-    mesh: { active: false, peers: new Map(), bc: null, signal: null },
-  };
+    mesh: { active: false, peers: new Map(), bc: null, signal: null }};
 
   function loadConfig() {
     try { return JSON.parse(localStorage.getItem('fall-kit.config') || '{}'); }
@@ -155,8 +152,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     if (tier === 'T2' && STATE.ai.ready && STATE.ai.engine) {
       const r = await STATE.ai.engine.chat.completions.create({
         messages: [{ role: 'system', content: systemPrompt }, { role: 'user', content: userMsg }],
-        max_tokens: maxTokens,
-      });
+        max_tokens: maxTokens});
       return r.choices[0].message.content;
     }
     if (tier === 'T3' && STATE.config.api_key && STATE.config.api_provider) {
@@ -173,8 +169,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.anthropic.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'x-api-key': key, 'anthropic-version': '2023-06-01' },
-        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, system: sys, messages: [{ role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('Anthropic ' + r.status + ': ' + (await r.text()).slice(0, 200));
       const j = await r.json();
       return j.content[0].text;
@@ -183,8 +178,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.openai.url, {
         method: 'POST',
         headers: { 'content-type': 'application/json', 'Authorization': 'Bearer ' + key },
-        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] }),
-      });
+        body: JSON.stringify({ model, max_tokens: maxTokens, messages: [{ role: 'system', content: sys }, { role: 'user', content: msg }] })});
       if (!r.ok) throw new Error('OpenAI ' + r.status);
       const j = await r.json();
       return j.choices[0].message.content;
@@ -193,8 +187,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
       const r = await fetch(T3_PROVIDERS.google.url + model + ':generateContent?key=' + encodeURIComponent(key), {
         method: 'POST',
         headers: { 'content-type': 'application/json' },
-        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } }),
-      });
+        body: JSON.stringify({ contents: [{ role: 'user', parts: [{ text: sys + '\n\n---\n\n' + msg }] }], generationConfig: { maxOutputTokens: maxTokens } })});
       if (!r.ok) throw new Error('Google ' + r.status);
       const j = await r.json();
       return j.candidates[0].content.parts[0].text;
@@ -435,8 +428,7 @@ table{width:100%;border-collapse:collapse;font-size:13px;margin-top:8px}th,td{pa
     openMint: openMint,  // v1.2 · launch kcc-mint with this seed prefilled as parent
     MODELS: WEBLLM_MODELS,
     PROVIDERS: T3_PROVIDERS,
-    state: STATE,
-  };
+    state: STATE};
 })(typeof window !== 'undefined' ? window : globalThis);
 
 </script>
@@ -474,45 +466,39 @@ const TEMPLATE_DEFS=[
     {id:'animal',name:'Animal Details',locked:false,text:'**Animal:** {{animal.name}} ({{animal.species}}, {{animal.breed}})\n**Microchip:** {{animal.microchip}}\n**Owner:** {{client.name}}\n**Contact during procedure:** {{ctx.contactNumber}}'},
     {id:'procedure',name:'Procedure',locked:false,text:'**Proposed procedure / treatment:**\n{{ctx.procedure}}\n\n**Reason:**\n{{ctx.reason}}\n\n**Estimated cost:** {{ctx.estimatedCost}}\n**Cost limit (do not exceed without calling):** {{ctx.costLimit}}'},
     {id:'risks',name:'Risks',locked:true,text:'I understand that:\n\n1. All anaesthetics and procedures carry a degree of risk, including risk of death, even in apparently healthy animals\n2. Pre-anaesthetic blood tests are recommended but not mandatory\n3. Unexpected findings during the procedure may require additional treatment\n4. The practice will attempt to contact me before exceeding the agreed cost limit\n5. I am responsible for all costs incurred\n6. Post-operative complications may occur and may require further treatment at additional cost'},
-    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'}]},
   {id:'consent-surgery',name:'Consent to Surgery',code:'VCS-01',cat:'consent',desc:'Detailed surgical consent including anaesthesia risks',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**CONSENT TO SURGICAL PROCEDURE**\n\nDate: {{ctx.date}}\nVet: {{ctx.vetName}} (MRCVS)\n\n**Animal:** {{animal.name}} ({{animal.species}}, {{animal.breed}}, {{animal.age}})\n**Owner:** {{client.name}}'},
     {id:'procedure',name:'Procedure',locked:false,text:'**Proposed surgery:** {{ctx.surgery}}\n\n**Pre-operative requirements:**\n- Starve from {{ctx.starveTime}} (water allowed until {{ctx.waterTime}})\n- Pre-anaesthetic blood screen: {{ctx.preAnBlood}}\n\n**Estimated cost range:** {{ctx.costRange}}'},
     {id:'anaesthesia',name:'Anaesthesia',locked:true,text:'**Anaesthesia risks:**\nGeneral anaesthesia carries inherent risks. The RCVS requires that I inform you:\n\n- Overall anaesthetic mortality rate in healthy dogs: approximately 1 in 2,000\n- Overall anaesthetic mortality rate in healthy cats: approximately 1 in 1,000\n- Risk increases with: age, obesity, brachycephalic breeds, pre-existing conditions\n- Your animal will be monitored throughout by trained staff\n- Intravenous fluid therapy is recommended during all general anaesthetics'},
     {id:'additional',name:'Additional',locked:false,text:'**Additional procedures authorised (if clinically indicated):**\n☐ Dental extractions (additional cost per extraction)\n☐ Biopsy submission (histopathology lab fee applies)\n☐ Microchip insertion\n☐ Other: {{ctx.additionalProcedures}}'},
-    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'}]},
   {id:'euthanasia',name:'Euthanasia Authorisation',code:'VEU-01',cat:'end-of-life',desc:'Owner authorisation for euthanasia and remains handling',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**EUTHANASIA AUTHORISATION**\n\nDate: {{ctx.date}}\n\n**Animal:** {{animal.name}} ({{animal.species}}, {{animal.breed}}, {{animal.age}})\n**Microchip:** {{animal.microchip}}\n**Owner:** {{client.name}}'},
     {id:'authorisation',name:'Authorisation',locked:true,text:'I, the undersigned, being the owner (or authorised agent of the owner) of the above-named animal, hereby authorise the veterinary surgeon to perform euthanasia.\n\nI understand that:\n1. Euthanasia is an irreversible procedure\n2. The veterinary surgeon has discussed the reasons for euthanasia and any alternatives with me\n3. I have had the opportunity to ask questions\n4. This decision is made voluntarily and in what I believe to be the best interests of the animal\n\nThe Animal Welfare Act 2006 places a duty of care on animal owners to ensure that the welfare needs of their animals are met. Euthanasia, when performed by a veterinary surgeon, is a humane and painless procedure.'},
     {id:'remains',name:'Remains',locked:false,text:'**Disposal of remains:**\n\n☐ Individual cremation with ashes returned (cost: {{ctx.cremationIndividual}})\n☐ Communal cremation (cost: {{ctx.cremationCommunal}})\n☐ Practice disposal\n☐ I wish to take the remains home\n\n**Memorials/paw print:** {{ctx.memorial}}'},
-    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sigs',name:'Signatures',locked:false,text:'[SIGNATURE_BLOCK]'}]},
   {id:'referral',name:'Veterinary Referral Letter',code:'VRF-01',cat:'clinical',desc:'Referral to specialist or referral hospital',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**VETERINARY REFERRAL**\n\nDate: {{ctx.date}}\nUrgency: {{ctx.urgency}}\n\nFrom: {{practice.name}}, {{practice.address}}\nReferring vet: {{ctx.referringVet}} MRCVS\n\nTo: {{ctx.referTo}}\nDepartment: {{ctx.department}}'},
     {id:'animal',name:'Animal',locked:false,text:'**Animal:** {{animal.name}}\n**Species/Breed:** {{animal.species}} / {{animal.breed}}\n**Age:** {{animal.age}} · **Sex:** {{animal.sex}} · **Neutered:** {{animal.neutered}}\n**Weight:** {{ctx.weight}}\n**Microchip:** {{animal.microchip}}\n**Owner:** {{client.name}} ({{client.phone}})'},
     {id:'clinical',name:'Clinical Summary',locked:false,text:'**Presenting complaint:**\n{{ctx.presentingComplaint}}\n\n**Duration:**\n{{ctx.duration}}\n\n**Clinical findings:**\n{{ctx.clinicalFindings}}\n\n**Diagnostics performed:**\n{{ctx.diagnostics}}\n\n**Treatment to date:**\n{{ctx.treatmentToDate}}\n\n**Current medications:**\n{{ctx.currentMeds}}'},
     {id:'request',name:'Request',locked:false,text:'**Reason for referral:**\n{{ctx.reasonForReferral}}\n\n**Specific questions:**\n{{ctx.questions}}'},
-    {id:'footer',name:'Footer',locked:true,text:'This referral is made with the informed consent of the owner. Please contact the referring practice if further information is required.\n\nThe owner is aware that referral fees are separate from, and in addition to, first-opinion fees.'},
-   ]},
+    {id:'footer',name:'Footer',locked:true,text:'This referral is made with the informed consent of the owner. Please contact the referring practice if further information is required.\n\nThe owner is aware that referral fees are separate from, and in addition to, first-opinion fees.'}]},
   {id:'discharge',name:'Discharge Instructions',code:'VDI-01',cat:'clinical',desc:'Post-operative / post-treatment discharge instructions',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**DISCHARGE INSTRUCTIONS**\n\nDate: {{ctx.date}}\n\n**Animal:** {{animal.name}} ({{animal.species}})\n**Owner:** {{client.name}}\n**Procedure/Treatment:** {{ctx.procedure}}'},
     {id:'post-op',name:'Post-operative Care',locked:false,text:'**Restrictions:**\n{{ctx.restrictions}}\n\n**Exercise:** {{ctx.exercise}}\n\n**Wound care:** {{ctx.woundCare}}\n\n**Collar/buster collar:** {{ctx.collar}}\n\n**Feeding:** {{ctx.feeding}}'},
     {id:'medications',name:'Medications',locked:false,text:'**Medications to give at home:**\n\n{{ctx.medications}}\n\n**Pain relief:** {{ctx.painRelief}}'},
     {id:'followup',name:'Follow-up',locked:false,text:'**Re-check appointment:** {{ctx.recheckDate}}\n\n**Suture/staple removal:** {{ctx.sutureRemoval}}'},
-    {id:'emergency',name:'Emergency',locked:true,text:'**Contact us immediately if:**\n- Excessive bleeding, swelling, or discharge from the wound\n- Your pet is not eating or drinking within 24 hours\n- Your pet appears to be in significant pain despite pain relief\n- Vomiting or diarrhoea persists for more than 24 hours\n- Your pet becomes lethargic or unresponsive\n- Breathing difficulties\n\n**Emergency contact:** {{practice.phone}}\nOut of hours: {{ctx.oohNumber}}'},
-   ]},
+    {id:'emergency',name:'Emergency',locked:true,text:'**Contact us immediately if:**\n- Excessive bleeding, swelling, or discharge from the wound\n- Your pet is not eating or drinking within 24 hours\n- Your pet appears to be in significant pain despite pain relief\n- Vomiting or diarrhoea persists for more than 24 hours\n- Your pet becomes lethargic or unresponsive\n- Breathing difficulties\n\n**Emergency contact:** {{practice.phone}}\nOut of hours: {{ctx.oohNumber}}'}]},
   {id:'vaccination',name:'Vaccination Certificate',code:'VVC-01',cat:'preventive',desc:'Primary and booster vaccination record',
    sections:[
     {id:'cert',name:'Certificate',locked:false,text:'**VACCINATION CERTIFICATE**\n\n**Animal:** {{animal.name}}\n**Species/Breed:** {{animal.species}} / {{animal.breed}}\n**DOB:** {{animal.dob}}\n**Microchip:** {{animal.microchip}}\n**Colour/Markings:** {{animal.colour}}\n**Owner:** {{client.name}}, {{client.address}}'},
     {id:'vaccines',name:'Vaccines Administered',locked:false,text:'**Date:** {{ctx.vaccineDate}}\n**Vaccine:** {{ctx.vaccineName}}\n**Batch no:** {{ctx.batchNo}}\n**Expiry:** {{ctx.vaccineExpiry}}\n**Next due:** {{ctx.nextDue}}\n\n**Administered by:** {{ctx.vetName}} MRCVS\n**Practice stamp:** {{practice.name}}'},
-    {id:'note',name:'Note',locked:true,text:'This certificate confirms that the above-named animal has received the vaccination(s) listed. Vaccinations should be kept up to date in accordance with the manufacturer\'s data sheet. This certificate does not guarantee immunity. Travel vaccinations (including rabies) require separate APHA/DEFRA pet passport documentation.'},
-   ]},
+    {id:'note',name:'Note',locked:true,text:'This certificate confirms that the above-named animal has received the vaccination(s) listed. Vaccinations should be kept up to date in accordance with the manufacturer\'s data sheet. This certificate does not guarantee immunity. Travel vaccinations (including rabies) require separate APHA/DEFRA pet passport documentation.'}]},
   {id:'insurance-claim',name:'Insurance Claim Form',code:'VIC-01',cat:'admin',desc:'Veterinary section of pet insurance claim',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**VETERINARY CERTIFICATE — INSURANCE CLAIM**\n\nDate: {{ctx.date}}\nInsurer: {{ctx.insurer}}\nPolicy number: {{ctx.policyNumber}}\nClaim number: {{ctx.claimNumber}}'},
@@ -520,28 +506,23 @@ const TEMPLATE_DEFS=[
     {id:'clinical',name:'Clinical Details',locked:false,text:'**Date symptoms first noticed by owner:** {{ctx.symptomDate}}\n**Date first presented:** {{ctx.presentedDate}}\n**Is this a pre-existing condition?** {{ctx.preExisting}}\n\n**Diagnosis:** {{ctx.diagnosis}}\n\n**Treatment provided:**\n{{ctx.treatment}}\n\n**Prognosis:** {{ctx.prognosis}}'},
     {id:'costs',name:'Costs',locked:false,text:'**Itemised costs:**\n{{ctx.itemisedCosts}}\n\n**Total claim:** {{ctx.totalClaim}}\n**Excess:** {{ctx.excess}}\n**Amount payable:** {{ctx.amountPayable}}'},
     {id:'declaration',name:'Declaration',locked:true,text:'I certify that the information provided is accurate and complete to the best of my knowledge. The treatment described was clinically necessary for the condition diagnosed.\n\nI understand that providing false or misleading information constitutes fraud under the Fraud Act 2006.'},
-    {id:'sig',name:'Signature',locked:false,text:'**Veterinary surgeon:** {{ctx.vetName}} MRCVS\n**RCVS number:** {{ctx.rcvsNumber}}\n[SIGNATURE_BLOCK]'},
-   ]},
+    {id:'sig',name:'Signature',locked:false,text:'**Veterinary surgeon:** {{ctx.vetName}} MRCVS\n**RCVS number:** {{ctx.rcvsNumber}}\n[SIGNATURE_BLOCK]'}]},
   {id:'cd-register',name:'Controlled Drug Register Entry',code:'VCD-01',cat:'prescribing',desc:'Misuse of Drugs Regulations 2001 — Schedule 2 CD register',
    sections:[
     {id:'entry',name:'Register Entry',locked:false,text:'**CONTROLLED DRUG REGISTER**\n\nDate: {{ctx.date}}\n\n**Drug:** {{ctx.drugName}}\n**Schedule:** {{ctx.schedule}}\n**Form:** {{ctx.form}}\n**Strength:** {{ctx.strength}}'},
     {id:'supply',name:'Supply/Administration',locked:false,text:'**Supplied/administered to:** {{animal.name}} ({{client.name}})\n**Amount:** {{ctx.amount}}\n**Running balance:** {{ctx.runningBalance}}\n\n**Authorised by:** {{ctx.vetName}} MRCVS'},
-    {id:'legal',name:'Legal Requirements',locked:true,text:'Misuse of Drugs Regulations 2001 (as amended):\n\n- Schedule 2 CDs: register must be maintained, entries made on day of transaction or next day\n- Register must be bound (or computerised per Home Office approval), indelible entries\n- Separate page per drug and strength\n- Running balance recommended (mandatory from 2006 amendments)\n- Annual stock check and destruction witnessed by authorised person\n- Safe/cabinet meeting BS2881 security requirements\n- Records retained for 2 years from date of last entry\n\nRCVS guidance: quarterly stock reconciliation recommended.'},
-   ]},
+    {id:'legal',name:'Legal Requirements',locked:true,text:'Misuse of Drugs Regulations 2001 (as amended):\n\n- Schedule 2 CDs: register must be maintained, entries made on day of transaction or next day\n- Register must be bound (or computerised per Home Office approval), indelible entries\n- Separate page per drug and strength\n- Running balance recommended (mandatory from 2006 amendments)\n- Annual stock check and destruction witnessed by authorised person\n- Safe/cabinet meeting BS2881 security requirements\n- Records retained for 2 years from date of last entry\n\nRCVS guidance: quarterly stock reconciliation recommended.'}]},
   {id:'clinical-notes',name:'Clinical Notes Template',code:'VCN-01',cat:'clinical',desc:'SOAP-format clinical note for patient record',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**CLINICAL NOTES**\n\nDate: {{ctx.date}} · Time: {{ctx.time}}\nVet: {{ctx.vetName}} MRCVS\n\n**Animal:** {{animal.name}} ({{animal.species}}, {{animal.breed}}, {{animal.age}})\n**Owner:** {{client.name}}\n**Weight:** {{ctx.weight}}'},
     {id:'soap',name:'SOAP',locked:false,text:'**S — Subjective (history):**\n{{ctx.subjective}}\n\n**O — Objective (examination):**\nTemp: {{ctx.temp}} · HR: {{ctx.hr}} · RR: {{ctx.rr}} · BCS: {{ctx.bcs}}/9\n{{ctx.examination}}\n\n**A — Assessment:**\n{{ctx.assessment}}\n\n**P — Plan:**\n{{ctx.plan}}'},
-    {id:'meds',name:'Medications Dispensed',locked:false,text:'{{ctx.medications}}'},
-   ]},
+    {id:'meds',name:'Medications Dispensed',locked:false,text:'{{ctx.medications}}'}]},
   {id:'estimate',name:'Treatment Estimate',code:'VTE-01',cat:'admin',desc:'Itemised cost estimate for owner approval',
    sections:[
     {id:'header',name:'Header',locked:false,text:'**TREATMENT ESTIMATE**\n\nDate: {{ctx.date}}\n\n**Animal:** {{animal.name}} ({{animal.species}})\n**Owner:** {{client.name}}\n**Condition:** {{ctx.condition}}'},
     {id:'items',name:'Itemised Costs',locked:false,text:'{{ctx.items}}\n\n**Estimated total (excl. VAT):** {{ctx.subtotal}}\n**VAT (20%):** {{ctx.vat}}\n**Estimated total (incl. VAT):** {{ctx.total}}\n\nThis is an estimate only. Actual costs may vary depending on clinical findings.'},
     {id:'payment',name:'Payment',locked:true,text:'Payment is due at the time of treatment or discharge. We accept cash, card, and bank transfer. Payment plans may be available — please ask at reception.\n\nIf you have pet insurance, you are responsible for payment in full. We can provide a completed claim form and direct payment may be available with selected insurers.'},
-    {id:'sigs',name:'Approval',locked:false,text:'I have read and understood this estimate and authorise the practice to proceed with treatment.\n\n[SIGNATURE_BLOCK]'},
-   ]},
-];
+    {id:'sigs',name:'Approval',locked:false,text:'I have read and understood this estimate and authorise the practice to proceed with treatment.\n\n[SIGNATURE_BLOCK]'}]}];
 
 let state={active:'templates',firm:null,clients:[],documents:[],audit:[],
   ui:{selectedTemplate:null,selectedClient:null,editingSections:{},extraContext:'',chat:[]},
@@ -575,7 +556,7 @@ function buildContext(){
 }
 function resolveText(text,ctx){return text.replace(/\{\{([^}]+)\}\}/g,(_,key)=>{const v=ctx[key.trim()];return v!=null&&v!==''?String(v):`<span class="placeholder-empty">{{${key.trim()}}}</span>`})}
 function renderPaper(tpl,ctx,sections){return `<div class="doc-meta">${esc(tpl.name)} · ${esc(tpl.code)} · ${TOOLNAME} · ${dateStr(now())}</div>\n`+sections.map(s=>{const text=state.ui.editingSections?.[s.id]??s.text;const html=resolveText(text,ctx);if(s.locked)return `<div class="clause-locked">${mdB(html)}</div>`;return mdB(html)}).join('\n')}
-function mdB(md){return md.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>').replace(/\n\n/g,'</p><p>').replace(/\n(\d+\.\s)/g,'<br>$1').replace(/\n-\s/g,'<br>• ').replace(/☐/g,'<span style="font-size:16px">☐</span>').replace(/\[SIGNATURE_BLOCK\]/g,'<div class="sig-block"><div><div class="sig-line"></div>Signed (Vet)</div><div><div class="sig-line"></div>Signed (Owner)</div></div>').replace(/^/,'<p>').replace(/$/,'</p>')}
+function mdB(md){return md.replace(/\*\*(.+?)\*\*/g,'<strong>TBA</strong>').replace(/\n\n/g,'</p><p>').replace(/\n(\d+\.\s)/g,'<br>TBA').replace(/\n-\s/g,'<br>• ').replace(/☐/g,'<span style="font-size:16px">☐</span>').replace(/\[SIGNATURE_BLOCK\]/g,'<div class="sig-block"><div><div class="sig-line"></div>Signed (Vet)</div><div><div class="sig-line"></div>Signed (Owner)</div></div>').replace(/^/,'<p>').replace(/$/,'</p>')}
 
 function render(){$('#tabNav').innerHTML=TABS.map(t=>`<button class="${state.active===t.id?'active':''}" onclick="switchTab('${t.id}')">${t.label}</button>`).join('');const v=$('#view');switch(state.active){case 'templates':return renderTemplates(v);case 'generate':return renderGenerate(v);case 'documents':return renderDocuments(v);case 'practice':return renderPractice(v);case 'clients':return renderClients(v);case 'qa':return renderQA(v)}}
 function switchTab(id){state.active=id;persistUI();render()}
@@ -620,8 +601,7 @@ const T0_QA=[
   {q:/vaccination|vaccine|titre/i,a:'WSAVA vaccination guidelines: core vaccines (dogs: DHP; cats: FPV, FHV, FCV) — primary course + 12-month booster, then every 3 years. Non-core based on risk. Titre testing available as alternative to booster vaccination. Rabies: required for APHA Pet Passport (travel). No UK legal requirement for vaccination (unlike some countries). Record batch number, expiry, and site.'},
   {q:/insurance|claim|pre.?existing/i,a:'Vet completes the clinical section of the insurance claim form. Must be accurate and complete. Pre-existing conditions: must disclose to insurer. Common issues: policy exclusions, excess, co-payment, annual/lifetime limits. Direct claims: some insurers pay practice directly. Vet cannot refuse to complete a claim form. Fee chargeable for completion. Fraud Act 2006 applies to false claims.'},
   {q:/rcvs|code|conduct|fitness/i,a:'RCVS (Royal College of Veterinary Surgeons) regulates the veterinary profession. Code of Professional Conduct: 10 principles. Fitness to Practise: disciplinary committee can warn, suspend, or remove from register. Annual renewal fee required. Practice Standards Scheme: voluntary accreditation (Core, GP, Hospital). CPD: minimum 35 hours over 3 years (RCVS requirement).'},
-  {q:/record|clinical|notes|soap/i,a:'RCVS requires adequate clinical records. SOAP format recommended: Subjective (history), Objective (examination), Assessment (diagnosis), Plan (treatment). Records must include: date, animal ID, owner, clinical findings, treatment, medications dispensed, consent obtained. Retain for minimum 7 years. Digital records: must be backed up. Records belong to the practice, not the client — but client has right to request copies.'},
-];
+  {q:/record|clinical|notes|soap/i,a:'RCVS requires adequate clinical records. SOAP format recommended: Subjective (history), Objective (examination), Assessment (diagnosis), Plan (treatment). Records must include: date, animal ID, owner, clinical findings, treatment, medications dispensed, consent obtained. Retain for minimum 7 years. Digital records: must be backed up. Records belong to the practice, not the client — but client has right to request copies.'}];
 function askT0(q){for(const r of T0_QA){if(r.q.test(q))return {answer:r.a,source:'T0 · UK veterinary rules'}}return null}
 async function askT3(q){if(!state.settings.anthropicKey)return null;try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'x-api-key':state.settings.anthropicKey,'anthropic-version':'2023-06-01','content-type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:600,messages:[{role:'user',content:'You are a UK veterinary practice expert. RCVS, VSA 1966, controlled drugs, animal welfare. Concise.\n\n'+q}]})});if(!res.ok)return null;const j=await res.json();return {answer:j.content?.[0]?.text,source:'T3 · Anthropic'}}catch(e){return null}}
 function renderQA(v){v.innerHTML=`<div class="section-h"><h2>Q & A</h2><div class="sub">T0 + T3 BYOK</div></div><div class="card" style="max-width:780px"><div class="chat" id="chatBox">${(state.ui.chat||[]).map(m=>`<div class="msg ${m.role}">${esc(m.text)}${m.source?`<div class="src">${esc(m.source)}</div>`:''}</div>`).join('')}</div><div class="chat-input"><input id="chatIn" placeholder="Ask… 'CD register requirements?' · 'euthanasia consent?' · 'RCVS CPD?'" onkeydown="if(event.key==='Enter')askQ()"><button class="btn brass" onclick="askQ()">Ask</button></div></div>`;const box=$('#chatBox');if(box)box.scrollTop=box.scrollHeight}
