@@ -39,4 +39,4 @@ Generate, preview, and issue UK veterinary clinical documents from 10 templates.
 
 ## Licence
 
-MIT · Simon Gant · prime 967 · ◊·κ=1.
+MIT · Simon Gant.
